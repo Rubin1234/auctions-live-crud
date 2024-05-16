@@ -84,6 +84,7 @@
 
 <script>
 import axios from "axios";
+import Swal from "sweetalert2";
 
 export default {
     name: "create-user",
@@ -111,11 +112,12 @@ export default {
                 .then((response) => {
                     this.formValues.name = response.data.user.name;
                     this.formValues.email = response.data.user.email;
-                    this.formValues.phone_number =response.data.user.phone_number;
+                    this.formValues.phone_number =
+                        response.data.user.phone_number;
                     this.formValues.address = response.data.user.address;
                     this.formValues.country = response.data.user.country;
                     this.formValues.occupation = response.data.user.occupation;
-                     this.formValues.id = response.data.user.id;
+                    this.formValues.id = response.data.user.id;
                 })
                 .catch((error) => {});
         },
@@ -127,12 +129,24 @@ export default {
                 .post("/api/create-user", this.formValues)
                 .then((response) => {
                     this.$router.push({ path: "/" });
+                    this.ShowToastMessage("User Updated Successfully");
                 })
                 .catch((error) => {
                     if (error.response.status === 422) {
                         this.errors = error.response.data.errors;
                     }
                 });
+        },
+
+        ShowToastMessage(title) {
+            Swal.fire({
+                icon: "success",
+                title: title,
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 5000, // Close after 5 seconds
+            });
         },
     },
 };

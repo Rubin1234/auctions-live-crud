@@ -1,6 +1,6 @@
 <template>
     <div style="display: flex; justify-content: center">
-        <div>
+   <div>
             <h1 class="text-center" style="margin-top: 50px">List of Users</h1>
             <div
                 class="text-right"
@@ -37,7 +37,11 @@
                                 type="button"
                                 class="btn btn-info"
                                 style="margin-right: 10px"
-                                @click="this.$router.push('/update-user/' + userList.id)"
+                                @click="
+                                    this.$router.push(
+                                        '/update-user/' + userList.id
+                                    )
+                                "
                             >
                                 Update
                             </button>
@@ -52,60 +56,82 @@
                     </tr>
                 </tbody>
             </table>
+              <pagination :total-items="totalItems" :items-per-page="itemsPerPage" @page-change="handlePageChange"/>
         </div>
     </div>
 </template>
 
 <script>
+
+import Pagination from '../components/paginate.vue';
 import axios from "axios";
+import Swal from 'sweetalert2';
+
 
 export default {
+    components: {
+    Pagination
+},
     name: "homePage",
     data() {
         return {
             userLists: [],
+            currentPage: 1,
+            totalItems: 10,
+            itemsPerPage: 5,
+            lastPage: 0,
+            toastMessage: ''
         };
     },
     mounted() {
         this.getUsers();
+
     },
     methods: {
-        getUsers() {
-            axios
-                .get("/api/get-users")
-                .then((response) => {
-                    this.userLists = response.data.users.data;
-                })
-                .catch((error) => {
-                    console.error("Error fetching users:", error);
-                });
-
-            // axios.get('https://6645b17cb8925626f892bb46.mockapi.io/auction-live/users').then((response)=>{
-            //    this.userLists = response.data
-            // }).catch((error)=> {
-            //     console.error('Error fetching users:', error);
-            // })
-        },
-        updateUser(user_id){
-            //  axios
-            //     .post("api/create-user", { id: user_id })
-            //     .then((response) => {
-            //     })
-            //     .catch((error) => {
-                    
-            //     });
-        },
-        deleteUser(user_id, index) {
-            axios
-                .post("api/delete-user/", { id: user_id })
-                .then((response) => {
-                    this.userLists.splice(index, 1);
-                })
-                .catch((error) => {
-
-                });
-        },
+        handlePageChange(page) {
+        this.currentPage = page;
+        this.getUsers(); // Call getUsers method to fetch data for the current page
     },
+       getUsers() {
+        axios
+            .get("/api/get-users", {
+                params: {
+                    page: this.currentPage
+                }
+            })
+            .then((response) => {
+                this.userLists = response.data.users.data;
+                // For Pagination
+                this.currentPage = response.data.users.current_page;
+                this.totalItems = response.data.users.total;
+                this.itemsPerPage = response.data.users.per_page;
+                this.lastPage = response.data.users.last_page;
+            })
+            .catch((error) => {
+                console.error("Error fetching users:", error);
+            });
+    },
+    deleteUser(user_id, index) {
+        axios
+            .post("api/delete-user/", { id: user_id })
+            .then((response) => {
+                this.userLists.splice(index, 1);
+                 this.ShowToastMessage('User Deleted Successfully');
+            })
+            .catch((error) => {});
+    },
+    ShowToastMessage(title) {
+       Swal.fire({
+        icon: 'success',
+        title: title,
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 5000 // Close after 5 seconds
+      });
+    },
+   
+},
 };
 </script>
 

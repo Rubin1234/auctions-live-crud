@@ -11,10 +11,11 @@ class UserController extends Controller
 {
     public function getUsers()
     {
-        $users = User::paginate(15);;
+        $users = User::orderBy('id', 'desc')->paginate(10);
 
         return [
             'users' => $users
+            
         ];
     }
 
@@ -32,9 +33,8 @@ class UserController extends Controller
 
         User::updateOrCreate([ 'id' => $request['id']],$validated);
 
-        return response()->json([
-            'success' => 'User created successfully.'
-        ]);
+        return response()->noContent();
+        
     }
 
     public function getUserDetails(Request $request){
