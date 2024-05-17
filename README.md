@@ -31,8 +31,7 @@ Create User
 ![image](https://github.com/Rubin1234/auctions-live-crud/assets/50777621/4cb30a5a-41e9-4c53-9dd4-0a5092a6f9f9)
 
 Delete User
-![image](https://github.com/Rubin1234/auctions-live-crud/assets/50777621/eee4beeb-d42c-4b68-a726-2453703919b1)
-
+![image](https://github.com/Rubin1234/auctions-live-crud/assets/50777621/1b3883ca-dbde-4b6a-8456-a7b798497543)
 
 
 Update User
