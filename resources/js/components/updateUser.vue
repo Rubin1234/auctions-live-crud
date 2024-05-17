@@ -84,10 +84,11 @@
 
 <script>
 import axios from "axios";
-import Swal from "sweetalert2";
+import SwalMixin from "../mixins/swalMixin.js";
 
 export default {
     name: "create-user",
+     mixins: [SwalMixin],
     data() {
         return {
             formValues: {
@@ -124,29 +125,18 @@ export default {
         submitForm(event) {
             event.preventDefault();
 
-            //calling API for creating user
+            //Calling API for creating user
             axios
                 .post("/api/create-user", this.formValues)
                 .then((response) => {
                     this.$router.push({ path: "/" });
-                    this.ShowToastMessage("User Updated Successfully");
+                    this.fireSwal('User Updated Successfully', 'success');
                 })
                 .catch((error) => {
                     if (error.response.status === 422) {
                         this.errors = error.response.data.errors;
                     }
                 });
-        },
-
-        ShowToastMessage(title) {
-            Swal.fire({
-                icon: "success",
-                title: title,
-                toast: true,
-                position: "top-end",
-                showConfirmButton: false,
-                timer: 5000, // Close after 5 seconds
-            });
         },
     },
 };

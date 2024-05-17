@@ -63,16 +63,17 @@
 
 <script>
 
-import Pagination from '../components/paginate.vue';
+import Pagination from './paginate.vue';
 import axios from "axios";
-import Swal from 'sweetalert2';
+import SwalMixin from "../mixins/swalMixin.js";
 
 
 export default {
+    name: "homePage",
     components: {
     Pagination
 },
-    name: "homePage",
+   mixins: [SwalMixin],
     data() {
         return {
             userLists: [],
@@ -116,21 +117,10 @@ export default {
             .post("api/delete-user/", { id: user_id })
             .then((response) => {
                 this.userLists.splice(index, 1);
-                 this.ShowToastMessage('User Deleted Successfully');
+                this.fireSwal('User Deleted Successfully', 'success');
             })
             .catch((error) => {});
-    },
-    ShowToastMessage(title) {
-       Swal.fire({
-        icon: 'success',
-        title: title,
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 5000 // Close after 5 seconds
-      });
-    },
-   
+    },   
 },
 };
 </script>
